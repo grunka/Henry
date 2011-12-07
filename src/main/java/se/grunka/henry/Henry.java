@@ -1,13 +1,5 @@
 package se.grunka.henry;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -19,6 +11,14 @@ import se.grunka.henry.log.LogFormatter;
 import se.grunka.henry.processing.Content;
 import se.grunka.henry.processing.ContentProcessor;
 import se.grunka.henry.processing.PipelineProcessor;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 public class Henry {
 	public static void main(String[] args) throws Exception {
@@ -42,12 +42,14 @@ public class Henry {
 
 	private final Logger logger;
 	private final PipelineProcessor processor;
+    private final Configuration configuration;
 
-	@Inject
-	public Henry(Logger logger, PipelineProcessor processor) {
+    @Inject
+	public Henry(Logger logger, PipelineProcessor processor, Configuration configuration) {
 		this.logger = logger;
 		this.processor = processor;
-	}
+        this.configuration = configuration;
+    }
 
 	private void run() throws IOException {
 		File directory = new File("src/test/resources/site");
@@ -69,6 +71,7 @@ public class Henry {
 				//TODO read _posts and create files for entries in there
 				//TODO check the features of jekyll and see if there is anything else
 				//TODO see if plugins could be handled in some way, maybe javascript using rhino
+                //TODO output completed files
 				Content content = processor.process(name, new Content(text, new HashMap<String, Object>()));
 				logger.info(content.getText());
 			}
