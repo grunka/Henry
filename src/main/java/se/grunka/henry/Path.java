@@ -2,7 +2,8 @@ package se.grunka.henry;
 
 public enum Path {
 	INCLUDES("_includes"),
-	LAYOUTS("_layouts");
+	LAYOUTS("_layouts"),
+    PLUGINS("_plugins");
 
 	private final String path;
 
@@ -10,7 +11,7 @@ public enum Path {
 		this.path = path;
 	}
 
-	public String getPath() {
+	public String toString() {
 		return path;
 	}
 }

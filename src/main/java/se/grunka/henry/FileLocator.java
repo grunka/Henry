@@ -16,7 +16,7 @@ public class FileLocator {
 	}
 
 	public File find(Path path, String name) throws FileNotFoundException {
-		File directory = new File(configuration.getSiteDirectory(), path.getPath());
+		File directory = new File(configuration.getSiteDirectory(), path.toString());
 		final File fullFile = new File(directory, name);
 		File[] files = fullFile.getParentFile().listFiles(new FilenameFilter() {
 			@Override
