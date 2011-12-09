@@ -1,11 +1,11 @@
 package se.grunka.henry;
 
+import com.google.inject.Inject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.Arrays;
-
-import com.google.inject.Inject;
 
 public class FileLocator {
 	private final Configuration configuration;
