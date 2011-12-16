@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 import org.apache.commons.io.IOUtils;
+import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 import se.grunka.henry.log.LogFormatter;
@@ -60,6 +61,12 @@ public class Henry {
         siteContext.put("title", "A Real Title");
         globalContext.put("site", siteContext);
         Context context = Context.enter();
+        context.setClassShutter(new ClassShutter() {
+            @Override
+            public boolean visibleToScripts(String fullClassName) {
+                return false;
+            }
+        });
         try {
             ScriptableObject scope = context.initStandardObjects();
             for (Map.Entry<String, Object> entry : globalContext.entrySet()) {
