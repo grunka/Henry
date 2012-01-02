@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MustacheProcessor implements ContentProcessor {
@@ -50,7 +51,9 @@ public class MustacheProcessor implements ContentProcessor {
 			File file = locator.find(Path.INCLUDES, name);
 			String template = IOUtils.toString(new FileReader(file));
             //TODO fix the potential thread safety issue with the use of the context this way... if I this project is ever multi-threaded
-			Content content = processor.process(file.getName(), new Content(template, currentContext));
+            currentContext = new HashMap<String, Object>(currentContext);
+            currentContext.remove("layout");
+            Content content = processor.process(file.getName(), new Content(template, currentContext));
 			return new StringReader(content.getText());
 		}
 
