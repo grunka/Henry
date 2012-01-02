@@ -28,7 +28,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>se.grunka.henry.Henry</mainClass>
+							<mainClass>se.grunka.henry.Runner</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
