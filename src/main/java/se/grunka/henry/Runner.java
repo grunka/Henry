@@ -57,6 +57,12 @@ public class Runner {
     }
 
     private void run() throws IOException {
+        //processPlugins();
+        File directory = new File("src/test/resources/site");
+        processDirectory(directory);
+    }
+
+    private void processPlugins() throws IOException {
         Context context = Context.enter();
         try {
             ScriptableObject scope = context.initStandardObjects();
@@ -70,8 +76,6 @@ public class Runner {
         } finally {
             Context.exit();
         }
-        File directory = new File("src/test/resources/site");
-        processDirectory(directory);
     }
 
     private void processDirectory(File directory) throws IOException {
