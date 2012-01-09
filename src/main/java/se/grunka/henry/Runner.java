@@ -1,5 +1,8 @@
 package se.grunka.henry;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -18,12 +21,19 @@ import se.grunka.henry.processing.PipelineProcessor;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 public class Runner {
+
+    public static final Type CONTEXT_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
+    public static final Gson GSON = new GsonBuilder().registerTypeAdapter(Object.class, new BasicTypesDeserializer()).create();
+    public static final String SITE_CONTEXT_FILE = "_config.json";
+
     public static void main(String[] args) throws Exception {
         Injector injector = Guice.createInjector(new Module() {
             @Override
@@ -59,7 +69,10 @@ public class Runner {
     private void run() throws IOException {
         //processPlugins();
         File directory = new File("src/test/resources/site");
-        processDirectory(directory);
+        Map<String, Object> siteContext = GSON.fromJson(new FileReader(new File(directory, SITE_CONTEXT_FILE)), CONTEXT_TYPE);
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("site", siteContext);
+        processDirectory(directory, context);
     }
 
     private void processPlugins() throws IOException {
@@ -78,14 +91,14 @@ public class Runner {
         }
     }
 
-    private void processDirectory(File directory) throws IOException {
+    private void processDirectory(File directory, Map<String, Object> context) throws IOException {
         for (File file : directory.listFiles()) {
             String name = file.getName();
             if (isSpecial(name)) {
                 continue;
             }
             if (file.isDirectory()) {
-                processDirectory(directory);
+                processDirectory(directory, context);
             } else {
                 String text = IOUtils.toString(new FileReader(file));
                 //TODO create default context with site object and such
@@ -93,7 +106,8 @@ public class Runner {
                 //TODO check the features of jekyll and see if there is anything else
                 //TODO see if plugins could be handled in some way, maybe javascript using rhino
                 //TODO output completed files
-                Content content = processor.process(name, new Content(text, new HashMap<String, Object>()));
+                Content content = processor.process(name, new Content(text, new HashMap<String, Object>(context)));
+                logger.info("---");
                 logger.info(content.getText());
             }
         }
